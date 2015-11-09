@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
-encoding//xieqiustock/items.py=utf-8
+encoding//xieqiustock/items.py=utf8
+encoding//xieqiustock/mongoclient.py=utf8
 encoding//xieqiustock/pipelines.py=utf-8
 encoding//xieqiustock/settings.py=utf-8
 encoding//xieqiustock/spiders/hq_spider.py=utf8
