@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from xieqiustock.items import StockItem
+from xieqiustock.items import StockKLineDayItem
 from xieqiustock.mongoclient import StockMongoClient
 
 class XieqiustockPipeline(object):
@@ -21,6 +22,7 @@ class XieqiustockKLineDayPipeline(object):
   def process_item(self, item, spider):
     if type(item) != StockKLineDayItem:
       return item
+    StockMongoClient().addStockKLineDayItem(item)
     #symbol = item['symbol']
     #sql = StockKLineDays.insert(mysql_replace_into='').values(**item)
     #with sql_engine.connect() as conn:

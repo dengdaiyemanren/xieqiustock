@@ -31,7 +31,16 @@ class StockMongoClient(object):
                         })
     def addStockKLineDayItem(self,stockKLineDayItem):
        #self.table1.save({'name':name})
-       self.stock.save(stockKLineDayItem)
+       self.klinestock.save({'symbol':stockKLineDayItem["symbol"],
+                             'day':stockKLineDayItem["day"],
+                             'open_price':stockKLineDayItem["open_price"],
+                             'close_price':stockKLineDayItem["close_price"],
+                             'low_price':stockKLineDayItem["low_price"],
+                             'high_price':stockKLineDayItem["high_price"],
+                             'delta_price':stockKLineDayItem["delta_price"],
+                             'turn_rate':stockKLineDayItem["turn_rate"],
+                             'delta_percent':stockKLineDayItem["delta_percent"],
+                             'volume':stockKLineDayItem["volume"],})
        print "xx"    
        
 #xx = "aaa"

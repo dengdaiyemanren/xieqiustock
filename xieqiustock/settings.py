@@ -27,7 +27,7 @@ DEFAULT_REQUEST_HEADERS = {
 
 ITEM_PIPELINES = {
     'xieqiustock.pipelines.XieqiustockPipeline': 300,
-    #'xieqiustock.pipelines.XieqiustockKLineDayPipeline': 300,
+    'xieqiustock.pipelines.XieqiustockKLineDayPipeline': 300,
 }
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'xieqiustock (+http://www.yourdomain.com)'
