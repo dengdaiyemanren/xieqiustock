@@ -13,7 +13,7 @@ class HqSpider(scrapy.Spider):
   allowed_domains = ["xueqiu.com"]
   access_token = None
   start_urls = ['http://xueqiu.com/hq']
-  
+
   def start_requests(self):
     request_hq_access_token = scrapy.Request("http://xueqiu.com/hq", callback=self.parse_hq)
     return [request_hq_access_token]
@@ -22,7 +22,7 @@ class HqSpider(scrapy.Spider):
     access_token_list = response.xpath('//script').re('SNB.data.access_token.*\|\| "(.*)";')
     assert len(access_token_list) == 1
     self.access_token = access_token_list[0]
-    request = scrapy.Request("http://xueqiu.com/stock/cata/stocklist.json?page=1&size=0&order=desc&orderby=percent&type=11%2C12&_=1", 
+    request = scrapy.Request("http://xueqiu.com/stock/cata/stocklist.json?page=1&size=0&order=desc&orderby=percent&type=11%2C12&_=1",
         cookies=self.get_cookies(),
         headers=self.get_ajax_header(),
         callback=self.parse_hq_count)
@@ -33,7 +33,7 @@ class HqSpider(scrapy.Spider):
     count = int(json_response['count']['count'])
     page_size = 100
     for page in xrange(0, count / page_size + 1):
-      request = scrapy.Request("http://xueqiu.com/stock/cata/stocklist.json?page=%d&size=%d&order=desc&orderby=percent&type=11%%2C12&_=1" % (page + 1, page_size), 
+      request = scrapy.Request("http://xueqiu.com/stock/cata/stocklist.json?page=%d&size=%d&order=desc&orderby=percent&type=11%%2C12&_=1" % (page + 1, page_size),
           cookies=self.get_cookies(),
           headers=self.get_ajax_header(),
           callback=self.parse_hq_stock_name_list)
@@ -52,21 +52,21 @@ class HqSpider(scrapy.Spider):
       item['catelog'] = getcatelog(stock['symbol'])
       yield item
 
-      request = scrapy.Request("http://xueqiu.com/stock/industry/stockList.json?type=1&code=%s&size=0" % (stock['symbol']), 
+      request = scrapy.Request("http://xueqiu.com/stock/industry/stockList.json?type=1&code=%s&size=0" % (stock['symbol']),
           cookies=self.get_cookies(),
           callback=self.parse_hq_stock_category)
       yield request
-      
+
       if item['market'] == 'PRE':
         continue
 
-      request = scrapy.Request("http://xueqiu.com/v4/stock/quote.json?code=%s&_=1" % (stock['symbol']), 
+      request = scrapy.Request("http://xueqiu.com/v4/stock/quote.json?code=%s&_=1" % (stock['symbol']),
           meta={'symbol': stock['symbol']},
           cookies=self.get_cookies(),
           callback=self.parse_hq_stock_basic)
       yield request
 
-      request = scrapy.Request("http://xueqiu.com/S/%s" % stock['symbol'], 
+      request = scrapy.Request("http://xueqiu.com/S/%s" % stock['symbol'],
           cookies=self.get_cookies(),
           callback=self.parse_hq_stock)
       # yield request
@@ -78,7 +78,7 @@ class HqSpider(scrapy.Spider):
       datetime_to_timestamp = lambda dt: int((dt  - datetime.datetime(1970, 1, 1)).total_seconds() * 1000)
       begin = datetime_to_timestamp(years_ago)
       end = datetime_to_timestamp(now)
-      request = scrapy.Request("http://xueqiu.com/stock/forchartk/stocklist.json?symbol=%s&period=1day&type=after&begin=%d&end=%d&_=1" % (stock['symbol'], begin, end), 
+      request = scrapy.Request("http://xueqiu.com/stock/forchartk/stocklist.json?symbol=%s&period=1day&type=after&begin=%d&end=%d&_=1" % (stock['symbol'], begin, end),
           cookies=self.get_cookies(),
           callback=self.parse_hq_stock_k_1d)
       yield request
@@ -109,7 +109,7 @@ class HqSpider(scrapy.Spider):
     item['market_capital'] = float(value.get('marketCapital', 0) or 0) or None
     item['exchangeable_market_capital'] = float(value.get('float_market_capital', 0) or 0) or None
     yield item
-    
+
   def parse_hq_stock(self, response):
     for td in response.xpath('//table[@class="topTable"]/tr/td').extract():
       td_selector = Selector(text=td)
@@ -150,4 +150,3 @@ class HqSpider(scrapy.Spider):
 
   def get_cookies(self):
     return {'xq_a_token': self.access_token}
-
